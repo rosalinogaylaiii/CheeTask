@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('./img/backround.jpg');
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    max-width: 100%;
+}
+.main_menu {margin: 0; }
+.main_menu ul{margin: 0; padding: 0; list-style: none; text-align: center;}
+.main_menu ul li{float: none; display: inline-block;}
+.main_menu ul li:nth-child(1){ float: none; }
+.main_menu ul li:nth-child(2){float: left; }
+.main_menu ul li:nth-child(3){float: right;}
+.main_menu ul li a{color: #262626; font-size: 20px; text-transform: uppercase; text-decoration: none;
+display: block; padding: 20px 10px;}
+.main_menu ul li a:hover{ color: #e0a347;}
+.main_menu ul li a { color: #262626; font-size: 20px; text-transform: uppercase; text-decoration: none; display: block; padding: 20px 10px; }
+.main_menu ul li a:hover { color: #e0a347; }
+.main_menu ul li:first-child a { color: #e0a347; }
+.main_menu ul li img { width: 150px;  height: auto; }
+
+#main_menu {
+    margin-left: auto;
+    margin-right: auto;
+}
+.main_menu ul li:first-child {
+    margin-left: auto;
+    margin-right: auto;
+}
+.main-title {
+    color: black;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.container {
+    background: black;
+    opacity: 50%;
+    border: transparent;
+    max-width: 95%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.button-container {
+    background-image: url('./img/Button_unhover.png');
+    background-repeat: no-repeat;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    gap: 1px;
+    justify-content: center;
+}
+.button-container:hover {
+    background-image: url('./img/Button_hover.png');
+    margin-left: auto;
+    margin-right: auto;
+    background-repeat: no-repeat;
+}
+.CheeTask a{
+    width: 150px;
+    height: 150px;
+}
