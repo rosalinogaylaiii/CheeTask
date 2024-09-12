@@ -18,6 +18,98 @@ closeModal.addEventListener('click', function() {
     taskModal.style.display = 'none'; // Hide the modal
 });
 
+// Function to store active tasks in localStorage
+function storeTasks() {
+    const tasks = [];
+    document.querySelectorAll('.task-item').forEach(task => {
+        const taskText = task.querySelector('span').textContent;
+        const deadline = task.querySelector('.deadline-text').textContent.replace(' (Deadline: ', '').replace(')', '');
+        const category = task.closest('.category-container').querySelector('.category-title').textContent;
+        const isCompleted = task.querySelector('.task-checkbox').checked;
+
+        tasks.push({
+            task: taskText,
+            deadline: deadline,
+            category: category,
+            completed: isCompleted
+        });
+    });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Function to load tasks from localStorage
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(taskData => {
+        // Create the task element
+        const newTask = document.createElement('div');
+        newTask.className = 'task-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'task-checkbox';
+        checkbox.checked = taskData.completed;
+
+        const taskText = document.createElement('span');
+        taskText.textContent = taskData.task;
+
+        const deadlineSpan = document.createElement('span');
+        deadlineSpan.className = 'deadline-text';
+        deadlineSpan.textContent = taskData.deadline ? ` (Deadline: ${taskData.deadline})` : '';
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-btn';
+        deleteButton.textContent = 'Delete';
+
+        // Event listener to mark task as completed
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+                taskText.classList.add('completed');
+            } else {
+                taskText.classList.remove('completed');
+            }
+            storeTasks(); // Update localStorage
+        });
+
+        // Event listener to delete task
+        deleteButton.addEventListener('click', function() {
+            storeDeletedTask(taskData.task, taskData.deadline, taskData.category); // Store task in deleted
+            newTask.remove();
+            
+            // Check if the category is empty and remove it if necessary
+            const categorySection = newTask.closest('.category-container');
+            if (categorySection && categorySection.querySelectorAll('.task-item').length === 0) {
+                categorySection.remove();
+            }
+
+            storeTasks(); // Update localStorage after deletion
+            location.reload(); // Reload the page to refresh UI and state
+        });
+
+        newTask.appendChild(checkbox);
+        newTask.appendChild(taskText);
+        newTask.appendChild(deadlineSpan);
+        newTask.appendChild(deleteButton);
+
+        // Find or create the category section
+        let categorySection = document.getElementById(`category-${taskData.category}`);
+        if (!categorySection) {
+            categorySection = document.createElement('div');
+            categorySection.id = `category-${taskData.category}`;
+            categorySection.className = 'category-container';
+
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.className = 'category-title';
+            categoryTitle.textContent = taskData.category;
+
+            categorySection.appendChild(categoryTitle);
+            taskContainer.appendChild(categorySection);
+        }
+
+        categorySection.appendChild(newTask);
+    });
+}
+
 // Handle adding tasks with custom category and deadline
 submitTaskButton.addEventListener('click', function() {
     const taskValue = taskInput.value.trim(); // Trim whitespace
@@ -29,21 +121,17 @@ submitTaskButton.addEventListener('click', function() {
         const newTask = document.createElement('div');
         newTask.className = 'task-item';
 
-        // Create a checkbox for marking the task as done
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.className = 'task-checkbox';
 
-        // Create a span to hold the task text
         const taskText = document.createElement('span');
         taskText.textContent = taskValue;
 
-        // Create a span for the deadline
         const deadlineSpan = document.createElement('span');
         deadlineSpan.className = 'deadline-text';
         deadlineSpan.textContent = deadlineValue ? ` (Deadline: ${deadlineValue})` : '';
 
-        // Create a delete button for removing the task
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-btn';
         deleteButton.textContent = 'Delete';
@@ -51,30 +139,34 @@ submitTaskButton.addEventListener('click', function() {
         // Add event listener to checkbox to mark the task as done
         checkbox.addEventListener('change', function() {
             if (checkbox.checked) {
-                taskText.classList.add('completed'); // Add 'completed' class
+                taskText.classList.add('completed');
             } else {
-                taskText.classList.remove('completed'); // Remove 'completed' class
+                taskText.classList.remove('completed');
             }
+            storeTasks(); // Update tasks in localStorage when checkbox is changed
         });
 
         // Add event listener to delete button to remove the task
         deleteButton.addEventListener('click', function() {
-            newTask.remove(); // Remove the task item from the container
-            
-            // Check if the category has no more tasks and remove it
-            const categoryTasks = categorySection.getElementsByClassName('task-item');
-            if (categoryTasks.length === 0) {
-                categorySection.remove(); // Remove the category if empty
+            storeDeletedTask(taskValue, deadlineValue, categoryValue); // Store task in deleted
+            newTask.remove();
+
+            // Check if the category is empty and remove it if necessary
+            const categorySection = newTask.closest('.category-container');
+            if (categorySection && categorySection.querySelectorAll('.task-item').length === 0) {
+                categorySection.remove();
             }
+
+            storeTasks(); // Update localStorage after deletion
+            location.reload(); // Reload the page to refresh UI and state
         });
 
-        // Append checkbox, task text, deadline, and delete button to the task div
         newTask.appendChild(checkbox);
         newTask.appendChild(taskText);
         newTask.appendChild(deadlineSpan);
         newTask.appendChild(deleteButton);
 
-        // Find or create the category section in the task container
+        // Find or create the category section
         let categorySection = document.getElementById(`category-${categoryValue}`);
         if (!categorySection) {
             categorySection = document.createElement('div');
@@ -97,7 +189,63 @@ submitTaskButton.addEventListener('click', function() {
         categoryInput.value = '';
         deadlineInput.value = '';
         taskModal.style.display = 'none';
+
+        // Store the new task in localStorage
+        storeTasks();
     } else {
         alert('Please enter a task and a category.');
     }
 });
+
+// Close the modal if the user clicks outside of it
+window.onclick = function(event) {
+    if (event.target == taskModal) {
+        taskModal.style.display = 'none';
+    }
+};
+
+// Load tasks from localStorage when the page loads
+document.addEventListener('DOMContentLoaded', loadTasks);
+
+// Function to store deleted tasks in localStorage
+function storeDeletedTask(taskText, deadlineValue, categoryValue) {
+    const deletedTasks = JSON.parse(localStorage.getItem('deletedTasks')) || [];
+    
+    // Create an object for the deleted task
+    const deletedTask = {
+        task: taskText,
+        deadline: deadlineValue,
+        category: categoryValue
+    };
+    
+    // Add the deleted task to the array
+    deletedTasks.push(deletedTask);
+    
+    // Save the updated array back to localStorage
+    localStorage.setItem('deletedTasks', JSON.stringify(deletedTasks));
+}
+
+// Function to display deleted tasks (assuming it's in a different section)
+function displayDeletedTasks() {
+    const deletedTasks = JSON.parse(localStorage.getItem('deletedTasks')) || [];
+    const historyContainer = document.getElementById('historyContainer'); // Make sure you have an element with this ID
+
+    if (deletedTasks.length === 0) {
+        historyContainer.innerHTML = '<p>No deleted tasks found.</p>';
+    } else {
+        deletedTasks.forEach(task => {
+            const taskItem = document.createElement('div');
+            taskItem.className = 'history-task';
+            taskItem.innerHTML = `
+                <p>Task: ${task.task}</p>
+                <p>Category: ${task.category}</p>
+                <p>Deadline: ${task.deadline ? task.deadline : 'No deadline'}</p>
+                <hr>
+            `;
+            historyContainer.appendChild(taskItem);
+        });
+    }
+}
+
+// Call the function to display deleted tasks when the page loads
+document.addEventListener('DOMContentLoaded', displayDeletedTasks);
