@@ -39,7 +39,7 @@ display: block; padding: 20px 10px;}
 
 .container {
     background: black;
-    opacity: 50%;
+    opacity: 0.9; /* Adjusted for better visibility */
     border: transparent;
     max-width: 95%;
     width: 100%;
@@ -52,6 +52,7 @@ display: block; padding: 20px 10px;}
     margin-right: auto;
     padding: 10px;
     box-sizing: border-box;
+    color: black; /* Ensures text is visible */
 }
 .button-container {
     background-image: url('./img/Button_unhover.png');
@@ -68,6 +69,95 @@ display: block; padding: 20px 10px;}
     margin-right: auto;
     background-repeat: no-repeat;
 }
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    opacity: 85%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+/* Styling for inputs */
+input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+.category-container {
+    background: #333; /* Slightly lighter background for categories */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.category-title {
+    font-size: 20px; /* Adjust font size */
+    font-weight: bold;
+    color: #e0a347; /* Category title color */
+    margin-bottom: 10px;
+}
+.completed {
+    text-decoration: line-through;
+    color: grey;
+}
+
+/* Style for delete button */
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.616);
+    opacity: 100%;
+    padding: 20px;
+    border-radius: 100px;
+    width: 300px;
+    text-align: center;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .CheeTask a{
     width: 150px;
     height: 150px;
