@@ -60,6 +60,12 @@ submitTaskButton.addEventListener('click', function() {
         // Add event listener to delete button to remove the task
         deleteButton.addEventListener('click', function() {
             newTask.remove(); // Remove the task item from the container
+            
+            // Check if the category has no more tasks and remove it
+            const categoryTasks = categorySection.getElementsByClassName('task-item');
+            if (categoryTasks.length === 0) {
+                categorySection.remove(); // Remove the category if empty
+            }
         });
 
         // Append checkbox, task text, deadline, and delete button to the task div
@@ -95,10 +101,3 @@ submitTaskButton.addEventListener('click', function() {
         alert('Please enter a task and a category.');
     }
 });
-
-// Close the modal if the user clicks outside of it
-window.onclick = function(event) {
-    if (event.target == taskModal) {
-        taskModal.style.display = 'none';
-    }
-};
