@@ -50,6 +50,8 @@ display: block; padding: 20px 10px;}
     box-sizing: border-box;
     font-weight: 700;
 }
+.container h1 p{ opacity: 100%; 
+}
 .CheeTask a{
     width: 150px;
     height: 150px;
