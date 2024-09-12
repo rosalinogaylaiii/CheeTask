@@ -145,7 +145,7 @@ input[type="text"], input[type="date"] {
 
 /* The Close Button */
 .close {
-    color: #fc0101;
+    color: red;
     float: right;
     font-size: 28px;
     font-weight: bold;
